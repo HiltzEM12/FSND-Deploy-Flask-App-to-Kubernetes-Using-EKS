@@ -36,3 +36,102 @@ Completing the project involves several steps:
 6. Create a CodeBuild stage which will build, test, and deploy your code
 
 For more detail about each of these steps, see the project lesson [here](https://classroom.udacity.com/nanodegrees/nd004/parts/1d842ebf-5b10-4749-9e5e-ef28fe98f173/modules/ac13842f-c841-4c1a-b284-b47899f4613d/lessons/becb2dac-c108-4143-8f6c-11b30413e28d/concepts/092cdb35-28f7-4145-b6e6-6278b8dd7527).
+
+
+# Virtual Enviornment
+
+We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+
+On Windows, run the following:
+    py -m pip install --user virtualenv
+    py -m venv env
+The last variable above is the name of the virtual environment.  In this case 'env'
+Then add the env folder to the gitignore
+Then activate the virtual environment by running:
+    .\env\Scripts\activate
+If the above doesn't work, use:
+    source env/Scripts/activate
+Check to see if its running, run:
+    where python
+It should display something allong the lines of (...env\Scripts\python.exe) if it's running.
+To leave the virtual environment, run:
+    deactivate
+
+# Notes
+Will need to install jq (a JSON parser)
+To do this in Windows, run the follwing in an admin shell:
+choco install jq
+
+To run, use python main.py
+Will need variables avaialble to the terminal, so run the following:
+    export JWT_SECRET='myjwtsecret'
+    export LOG_LEVEL=DEBUG
+    export TOKEN=`curl -d '{"email":"test@test.com","password":"nopassword"}' -H "Content-Type: application/json" -X POST localhost:8080/auth  | jq -r '.token'`
+
+The last variable is the authorization token.  Calls the endpoint 'localhost:8080/auth' with the 
+{"email":"<EMAIL>","password":"<PASSWORD>"} as the message body.
+
+To try check the contents of the token, use:
+curl --request GET 'http://127.0.0.1:8080/contents' -H "Authorization: Bearer ${TOKEN}" | jq .
+
+Create the docker file and run it using the notes in the file
+
+Once the dockerfile is running try the endpoints using the following
+export TOKEN=`curl -d '{"email":"test@test.com","password":"password"}' -H "Content-Type: application/json" -X POST localhost:80/auth  | jq -r '.token'`
+
+curl --request GET 'http://127.0.0.1:80/contents' -H "Authorization: Bearer ${TOKEN}" | jq .
+
+Create a Kubernetes (EKS) Cluster
+eksctl create cluster --name simple-jwt-api
+To check the process, go to https://us-east-1.console.aws.amazon.com/cloudformation/ and make sure you're in the correct zone
+
+The AWS AIM's can be found here: https://console.aws.amazon.com/iam/home#/users
+
+
+Greate an environment variable for the account id via:
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+Create a role policy that allows the actions eks:describe via:
+TRUST="{ \"Version\": \"2012-10-17\", \"Statement\": [ { \"Effect\": \"Allow\", \"Principal\": { \"AWS\": \"arn:aws:iam::${ACCOUNT_ID}:root\" }, \"Action\": \"sts:AssumeRole\" } ] }"
+
+Create a role
+aws iam create-role --role-name UdacityFlaskDeployCBKubectlRole --assume-role-policy-document "$TRUST" --output text --query 'Role.Arn'
+
+Create a role policy document via:
+echo '{ "Version": "2012-10-17", "Statement": [ { "Effect": "Allow", "Action": [ "eks:Describe*", "ssm:GetParameters" ], "Resource": "*" } ] }' > 'tmp/iam-role-policy'
+
+Attach the policy to the 'UdacityFlaskDeployCBKubectlRole' via:
+aws iam put-role-policy --role-name UdacityFlaskDeployCBKubectlRole --policy-name eks-describe --policy-document file://./tmp/iam-role-policy
+
+
+
+Get the current configmap and save it to a file
+kubectl get -n kube-system configmap/aws-auth -o yaml > 'tmp/aws-auth-patch.yml'
+
+If needed, replace ACCOUNT_ID with your account id that is found via this:
+aws sts get-caller-identity
+
+
+Generate a GitHub access token by going here: https://github.com/settings/tokens/
+generate the token with full control of private repositories by checking all under repo
+
+Create an environment variable for the key using:
+aws ssm put-parameter --name JWT_SECRET --value secrtetkeyhere --type SecureString
+Replace secrtetkeyhere with the token generated above
+
+Create a stack on aws using this link: https://us-east-2.console.aws.amazon.com/cloudformation/
+
+Use the ci-cd-codepipeline.cfn.yml file as template
+Make sure all the nessecary defaults are filled in that file
+
+I named the stack HiltzUdacityProject4
+
+To delete the cluster use:
+eksctl delete cluster simple-jwt-api
+
+
+install awscli in the virtual environment use:
+pip install awscli --upgrade
+
+
+
