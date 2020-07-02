@@ -148,7 +148,7 @@ Push an update to the github repository, then check the following site to see if
 https://console.aws.amazon.com/codesuite/codepipeline/pipelines?region=us-east-1
 
 Use the external ip url to test the app, replacing the variables:
-export TOKEN=`curl -d '{"email":"test@email.com","password":"thisPassword"}' -H "Content-Type: application/json" -X POST abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com/auth  | jq -r '.token'`
+export TOKEN=`curl -d '{"email":"itWorked@horray.com","password":"thisPassword"}' -H "Content-Type: application/json" -X POST abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com/auth  | jq -r '.token'`
 curl --request GET 'abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com/contents' -H "Authorization: Bearer ${TOKEN}" | jq 
 
 
