@@ -139,13 +139,14 @@ Test the endpoints using:
 kubectl get services simple-jwt-api -o wide
 Shold return something with the name simple-jwt-api
 The ip needed for the step below should be under cluster-ip in the return above
-Was abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com in this case
+Was 'abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com' in this case
 
-
+Push an update to the github repository, then check the following site to see if it took:
+https://console.aws.amazon.com/codesuite/codepipeline/pipelines?region=us-east-1
 
 Use the external ip url to test the app, replacing the variables:
 export TOKEN=`curl -d '{"email":"test@email.com,"password":"thisPassword"}' -H "Content-Type: application/json" -X POST abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com/auth  | jq -r '.token'`
-curl --request GET '1abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com/contents' -H "Authorization: Bearer ${TOKEN}" | jq 
+curl --request GET 'abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com/contents' -H "Authorization: Bearer ${TOKEN}" | jq 
 
 
 
