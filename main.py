@@ -102,45 +102,45 @@ def decode_jwt():
                 'nbf': data['nbf'] }
     return jsonify(**response)
 
-#Define the error handlers
-@app.errorhandler(404)
-def not_found(error):
-    return jsonify({
-        "success": False,
-        "error": 404,
-        "message": "Resource Not Found",
-        "sys_error": str(error)
-    }), 404
+# #Define the error handlers
+# @app.errorhandler(404)
+# def not_found(error):
+#     return jsonify({
+#         "success": False,
+#         "error": 404,
+#         "message": "Resource Not Found",
+#         "sys_error": str(error)
+#     }), 404
 
 
-@app.errorhandler(400)
-def bad_request(error):
-    return jsonify({
-        "success": False,
-        "error": 400,
-        "message": "Bad Request",
-        "sys_error": str(error)
-    }), 400
+# @app.errorhandler(400)
+# def bad_request(error):
+#     return jsonify({
+#         "success": False,
+#         "error": 400,
+#         "message": "Bad Request",
+#         "sys_error": str(error)
+#     }), 400
 
 
-@app.errorhandler(405)
-def not_allowed(error):
-    return jsonify({
-        "success": False,
-        "error": 405,
-        "message": "Request not allowed",
-        "sys_error": str(error)
-    }), 405
+# @app.errorhandler(405)
+# def not_allowed(error):
+#     return jsonify({
+#         "success": False,
+#         "error": 405,
+#         "message": "Request not allowed",
+#         "sys_error": str(error)
+#     }), 405
 
 
-@app.errorhandler(500)
-def not_allowed(error):
-    return jsonify({
-        "success": False,
-        "error": 500,
-        "message": "Internal Server Error",
-        "sys_error": str(error)
-    }), 405
+# @app.errorhandler(500)
+# def not_allowed(error):
+#     return jsonify({
+#         "success": False,
+#         "error": 500,
+#         "message": "Internal Server Error",
+#         "sys_error": str(error)
+#     }), 405
 
 
 
