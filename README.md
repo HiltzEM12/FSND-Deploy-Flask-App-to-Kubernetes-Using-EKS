@@ -126,8 +126,7 @@ generate the token with full control of private repositories by checking all und
 See gitHubKey file for the key created.  
 
 Create an environment variable for the key using:
-aws ssm put-parameter --name JWT_SECRET --value secrtetkeyhere --type SecureString
-Replace secrtetkeyhere with the token generated above
+aws ssm put-parameter --name JWT_SECRET --value "secrtetkeyhere" --type SecureString
 
 Create a stack on aws using this link: https://us-east-1.console.aws.amazon.com/cloudformation/
 
@@ -136,11 +135,27 @@ Make sure all the nessecary defaults are filled in that file
 
 I named the stack HiltzUdacityProject4
 
+Test the endpoints using:
+kubectl get services simple-jwt-api -o wide
+Shold return something with the name simple-jwt-api
+The ip needed for the step below should be under cluster-ip in the return above
+Was abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com in this case
+
+
+
+Use the external ip url to test the app, replacing the variables:
+export TOKEN=`curl -d '{"email":"test@email.com,"password":"thisPassword"}' -H "Content-Type: application/json" -X POST abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com/auth  | jq -r '.token'`
+curl --request GET '1abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com/contents' -H "Authorization: Bearer ${TOKEN}" | jq 
+
+
+
+
+
+
 To delete the cluster use:
 eksctl delete cluster simple-jwt-api
 
-
-install awscli in the virtual environment use:
+To install awscli in the virtual environment use:
 pip install awscli --upgrade
 
 
