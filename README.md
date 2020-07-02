@@ -106,20 +106,30 @@ aws iam put-role-policy --role-name UdacityFlaskDeployCBKubectlRole --policy-nam
 
 
 Get the current configmap and save it to a file
-kubectl get -n kube-system configmap/aws-auth -o yaml > 'tmp/aws-auth-patch.yml'
+kubectl get -n kube-system configmap/aws-auth -o yaml > ./aws-auth-patch.yml 
 
-If needed, replace ACCOUNT_ID with your account id that is found via this:
+In the data/mapRoles section of this document add, replacing ACCOUNT_ID with your account id:
+  - groups:
+      - system:masters
+      rolearn: arn:aws:iam::ACCOUNT_ID:role/UdacityFlaskDeployCBKubectlRole
+      username: build
+
+
+Account id can be found via this:
 aws sts get-caller-identity
 
+Update your cluster's configmap with:
+kubectl patch configmap/aws-auth -n kube-system --patch "$(cat aws-auth-patch.yml)"
 
 Generate a GitHub access token by going here: https://github.com/settings/tokens/
 generate the token with full control of private repositories by checking all under repo
+See gitHubKey file for the key created.  
 
 Create an environment variable for the key using:
 aws ssm put-parameter --name JWT_SECRET --value secrtetkeyhere --type SecureString
 Replace secrtetkeyhere with the token generated above
 
-Create a stack on aws using this link: https://us-east-2.console.aws.amazon.com/cloudformation/
+Create a stack on aws using this link: https://us-east-1.console.aws.amazon.com/cloudformation/
 
 Use the ci-cd-codepipeline.cfn.yml file as template
 Make sure all the nessecary defaults are filled in that file
