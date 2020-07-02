@@ -1,3 +1,6 @@
+# EXTERNAL-IP
+abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com
+
 # Deploying a Flask API
 
 This is the project starter repo for the fourth course in the [Udacity Full Stack Nanodegree](https://www.udacity.com/course/full-stack-web-developer-nanodegree--nd004): Server Deployment, Containerization, and Testing.
