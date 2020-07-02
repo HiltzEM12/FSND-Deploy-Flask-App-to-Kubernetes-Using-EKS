@@ -149,15 +149,14 @@ export TOKEN=`curl -d '{"email":"test@email.com","password":"thisPassword"}' -H 
 curl --request GET 'abb379b926bd840369d47671ff093ebe-1809895574.us-east-1.elb.amazonaws.com/contents' -H "Authorization: Bearer ${TOKEN}" | jq 
 
 
-
-
-
-
 To delete the cluster use:
 eksctl delete cluster simple-jwt-api
 
-To install awscli in the virtual environment use:
-pip install awscli --upgrade
+Or manually delete it in the aws GUI
+
+Delete the stack as well
+
+
 
 
 
